@@ -84,9 +84,8 @@ These two commands will result in similar, but **not** identical, Args record. Y
   local Args = require "luacmds"
   args = Args.parse_args(arg)  
 
-(1)
----
-``% mycmd -vl -o tmp.txt tmp.c``
+(1) ``% mycmd -vl -o tmp.txt tmp.c``
+------------------------------------
 
 ::
 
@@ -95,9 +94,8 @@ These two commands will result in similar, but **not** identical, Args record. Y
   args.options.o = "tmp.txt"
   args.positional = {"tmp.c"}
  
-(2)
----
-``% mycmd --verbose --log --out=tmp.txt tmp.c``
+(2) ``% mycmd --verbose --log --out=tmp.txt tmp.c``
+---------------------------------------------------
 
 ::
 
