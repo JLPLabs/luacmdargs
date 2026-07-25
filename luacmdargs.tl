@@ -1,15 +1,17 @@
 -- luacmdargs.tl
 -- A simple library for extracting options, flags and positional args
+-- * flags set a boolean or a count for a named arg
+--           : -x
+--           : -xv       "stacks" the flags, -xv == -x -v
+--           : -vvv      returns the count
+--           : --name
 -- * options set a value for a named arg
 --           : -x=value        (must be a single char after '-')
 --           : --name=value    (one or more chars after '--')
--- * flags set a boolean for a named arg
---           : -x
---           : --name
 -- * anything else is a positional argument
 
 local record Args
-   flags      : {string:boolean}
+   flags      : {string:boolean|integer}
    options    : {string:string}
    positional : {string}
 end
@@ -35,11 +37,11 @@ local function parse_args(argv: {string}): Args
       local dd = a:sub(1,2) == "--"                -- double dash?
 
       if eq then                                   -- indicates an option 
-        if a:sub(1, 2) == "--" then
+        if dd then
           local name = a:sub(3, eq - 1)
           local value = a:sub(eq + 1)
           args.options[name] = value
-        elseif a:sub(1, 1) == "-" and eq == 3 then
+        elseif d and eq == 3 then
           local name = a:sub(2, 2)
           local value = a:sub(4)
           args.options[name] = value
@@ -53,8 +55,17 @@ local function parse_args(argv: {string}): Args
 
       elseif d then                                -- a "-" flag
         local name = a:sub(2)
-        args.flags[name] = true
-
+        -- step through each letter
+        for j = 1, #name do
+           local f = name:sub(j,j)
+           if args.flags[f] == nil then
+              args.flags[f] = true
+           elseif args.flags[f] == true then
+              args.flags[f] = 2
+           else
+              args.flags[f] = args.flags[f] as integer + 1
+           end
+         end
       else                                         -- positional argument
          table.insert(args.positional, a)
       end  -- sorting this argument
@@ -65,10 +76,10 @@ end
 
 if arg[1] == "--demo" then
   -- Example usage
-  local args = parse_args({ "--verbose", "input1", "--output=file.txt", "-i=data.in", "-q", "input2", "input3" })
+  local args = parse_args({ "-vvv", "-ll", "input1", "-zv", "--output=file.txt", "-i=data.in", "-q", "input2", "input3" })
   print("flags:")
-  for k, _ in pairs(args.flags) do
-    print("  " .. k)
+  for k, v in pairs(args.flags) do
+    print("  " .. k .. ": " .. tostring(v))
   end
   print("options:")
   for k, v in pairs(args.options) do

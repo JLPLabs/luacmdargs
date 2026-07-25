@@ -30,19 +30,20 @@ Existence on command line sets a flag to ``true``, or a count, if multiple occur
 option
 ------
 
-Single dash with following value (``-o main.s``) or double dash key equal value (``--out=main.s``).
+Single dash with following value (``-o=main.s``) or double dash key equal value (``--out=main.s``).
 
 Sets a named arg to a value.
 
 ::
 
-  -x value        (must be a single char after '-')
-  --name=value    (one or more chars after '--')
+  -x=value
+  --name=value
 
 positional
 ----------
 
-Anything without a leading ``-`` or ``--`` is a positional argument. The arg is added to the positional list.
+Anything without a leading ``-`` or ``--`` is a positional argument. The arg is
+added to the positional list.
 
 
 ::
@@ -84,7 +85,7 @@ These two commands will result in similar, but **not** identical, Args record. Y
   local Args = require "luacmds"
   args = Args.parse_args(arg)  
 
-(1) ``% mycmd -vl -o tmp.txt tmp.c``
+(1) ``% mycmd -vl -o=tmp.txt tmp.c``
 ------------------------------------
 
 ::
