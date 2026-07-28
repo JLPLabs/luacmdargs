@@ -11,7 +11,7 @@
 -- * anything else is a positional argument
 
 local record Args
-   flags      : {string:boolean|integer}
+   flags      : {string:integer}    -- count of occurrences. Almost always 1.
    options    : {string:string}
    positional : {string}
 end
@@ -51,7 +51,7 @@ local function parse_args(argv: {string}): Args
 
       elseif dd then                               -- a "--" flag (since not an option)
         local name = a:sub(3)
-        args.flags[name] = true
+        args.flags[name] = 1
 
       elseif d then                                -- a "-" flag
         local name = a:sub(2)
@@ -59,11 +59,9 @@ local function parse_args(argv: {string}): Args
         for j = 1, #name do
            local f = name:sub(j,j)
            if args.flags[f] == nil then
-              args.flags[f] = true
-           elseif args.flags[f] == true then
-              args.flags[f] = 2
-           else
-              args.flags[f] = args.flags[f] as integer + 1
+              args.flags[f] = 1
+           else 
+              args.flags[f] = args.flags[f] + 1
            end
          end
       else                                         -- positional argument

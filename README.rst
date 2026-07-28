@@ -7,7 +7,7 @@ returning them in an Args record...
 .. code-block:: lua
 
   local record Args
-     flags      : {string:boolean|integer}
+     flags      : {string:integer}   -- count of occurrences; typically 1
      options    : {string:string}
      positional : {string}
   end
